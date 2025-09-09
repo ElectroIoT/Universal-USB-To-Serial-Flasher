@@ -97,8 +97,12 @@ Here are the key components (from your BOM):
 ---
 
 ## 🖼️ PCB Layout
-![PCB Layout](ch340_layout.png)  
+![PCB Layout](/Image/pcb_layout.png)  
 *Final routed PCB layout with ground pours*
+
+## 🖼️ PCB Schematic
+![PCB Layout](/Image/Schematic1_.png)  
+*Final routed PCB Schematic*
 
 ---
 
@@ -142,10 +146,24 @@ All files can be published on GitHub/PCBWay for sharing.
 
 ---
 
-## 🏆 Conclusion
-This **CH340C-based ESP & Arduino USB Flasher** is a reliable, feature-packed alternative to cheap adapters.  
-It’s designed for **makers, hobbyists, and IoT developers** who want a **stable and easy-to-use programmer**.  
+## 📂 Downloads
+- [📄 Schematic (PDF)](/Schematic/Schematic1_.png)  
+- [📄 BOM (Excel)](/BOM/BOM_Board1_Schematic1_2025-09-09.xlsx)  
+- [📄 Pick And Place (Excel)](/BOM/PickAndPlace_PCB1_2025-09-09.xlsx)
+- [📄 PCB Layout (PNG)](/Image/pcb_layout.png)  
+- [📄 3D Preview (PNG)](/Image/3d_Front.png)  
 
-With auto-programming, color silkscreen, ESD protection, and USB-C, it is ready for both **personal use and small-batch production**.  
+---
+
+## 🌐 Author & Contact
+👨‍💻 Designed by **ElectroIoT**  
+🔗 Website: [https://electroiot.in](https://electroiot.in)  
+▶️ YouTube: [ElectroIoT-IN](https://www.youtube.com/@ElectroIoT-IN)  
+📸 Instagram: [@electroiot_in](https://www.instagram.com/electroiot_in)  
+📧 Email: **electroiot.in@gmail.com**
+
+---
+
+✨ _Open Source Hardware for Makers – Share, Learn & Build Together!_
 
 ---
