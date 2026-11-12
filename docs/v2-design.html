@@ -104,6 +104,27 @@ td.ref{font-weight:700;white-space:nowrap}
 .step{position:relative;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px 18px 18px}
 .step:before{counter-increment:s;content:counter(s);position:absolute;top:-13px;left:16px;width:28px;height:28px;border-radius:50%;background:var(--a);color:#fff;font-weight:800;display:grid;place-items:center;font-size:14px}
 .step p{margin:0;color:var(--mute);font-size:14.5px}
+.ck{width:18px;height:18px;accent-color:var(--a);cursor:pointer;vertical-align:-3px}
+tr.done td{opacity:.55}tr.done td:first-child,tr.done td.tick{opacity:1}
+td.tick{width:38px;text-align:center}
+.prog{display:flex;align-items:center;gap:12px;margin:0 0 12px;flex-wrap:wrap}
+.bar{flex:1;min-width:160px;height:10px;border-radius:99px;background:var(--soft);border:1px solid var(--line);overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--a),#22c55e);width:0;transition:width .25s}
+.prog b{font-size:14px;white-space:nowrap}
+.tbtn{border:1px solid var(--line);background:var(--card);color:var(--mute);border-radius:10px;padding:6px 12px;font:600 13.5px system-ui;cursor:pointer}
+.tbtn:hover{color:var(--ink)}
+.ptabs{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 14px}
+.ptab{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:14px;padding:10px 14px;cursor:pointer;text-align:left;font:inherit;min-width:170px}
+.ptab small{display:block;color:var(--mute);font-size:12.5px}
+.ptab[aria-pressed="true"]{border-color:var(--a);box-shadow:0 0 0 2px color-mix(in srgb,var(--a) 35%,transparent)}
+.ptab .pp{font-weight:800;color:var(--a);font-size:12.5px}
+.net{display:inline-block;padding:1px 8px;border-radius:7px;font:700 12.5px ui-monospace,Consolas,monospace;color:#fff;white-space:nowrap}
+.ncflag{white-space:nowrap;display:inline-flex;align-items:center;gap:5px;padding:1px 8px;border-radius:7px;font:800 12px system-ui;background:#64748b26;color:var(--mute);border:1px dashed var(--nnc)}
+.ncflag:before{content:"\2715";color:#dc2626;font-weight:900}
+.partline{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;background:var(--soft);border-top:1px solid var(--line);padding:9px 12px;font-size:14px}
+.partline b{font-size:15px}
+.partline .mute{color:var(--mute);font-size:13px}
+.labels{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 14px}
 footer{margin-top:50px;padding:28px 0 40px;border-top:1px solid var(--line);color:var(--mute);font-size:14px}
 
 /* svg helpers */
@@ -148,7 +169,7 @@ footer{margin-top:50px;padding:28px 0 40px;border-top:1px solid var(--line);colo
 </header>
 
 <nav class="toc"><div class="wrap">
-  <a href="#fixes">V1 → V2</a><a href="#features">Features</a><a href="#block">Block diagram</a><a href="#schematic">Schematic</a><a href="#pinout">Pinout</a><a href="#bom">BOM</a><a href="#placement">Placement</a><a href="#wiring">Wiring</a><a href="#test">Bring-up</a>
+  <a href="#fixes">V1 → V2</a><a href="#features">Features</a><a href="#block">Block diagram</a><a href="#schematic">Schematic</a><a href="#sch-check">EasyEDA checklist</a><a href="#pinout">Pinout</a><a href="#bom">BOM</a><a href="#placement">Placement</a><a href="#wiring">Wiring</a><a href="#test">Bring-up</a>
 </div></nav>
 
 <main class="wrap">
@@ -370,6 +391,16 @@ footer{margin-top:50px;padding:28px 0 40px;border-top:1px solid var(--line);colo
   </div>
 </section>
 
+<!-- SCHEMATIC CHECKLIST -->
+<section id="sch-check">
+  <h2><small>EasyEDA · page by page</small>Schematic checklist</h2>
+  <p class="lead">Draw the schematic as 4 EasyEDA pages. On each page, first tick every symbol you place, then tick each pin as you wire it. Pins marked <span class="ncflag">NC flag</span> get a <b>No-Connect flag</b> in EasyEDA, so tick those when the flag is placed. Ticks are saved in this browser only.</p>
+  <div class="prog"><b id="schAll">0 / 0</b><div class="bar"><i id="schAllBar"></i></div><button class="tbtn" id="schHide">Hide done</button><button class="tbtn" id="schReset">Reset schematic ticks</button></div>
+  <div class="ptabs" id="schTabs"></div>
+  <div id="schPage"></div>
+  <div class="warn"><b>Before you trust a pin number:</b> resistors, capacitors and the PTC aren't polarised, so pins 1 and 2 are interchangeable. For <b>D1 and LED1&ndash;LED4</b>, check which symbol pin is K (cathode) on the LCSC part you place. For <b>Q1/Q2</b>, confirm SOT-23 pin 1 = B, 2 = E, 3 = C. For <b>J2</b>, this list assumes odd pins on the top row (1,3,5,7) and even pins on the bottom row, so check the footprint. Cross-page nets need a net label or net port with exactly the same name on each page. Afterwards, check them with <i>Design &rarr; Netlist</i> against <a href="../V2/netlist.csv">netlist.csv</a>.</div>
+</section>
+
 <!-- PINOUT -->
 <section id="pinout">
   <h2><small>Header</small>H1 pinout (1×11, 2.54 mm)</h2>
@@ -381,12 +412,13 @@ footer{margin-top:50px;padding:28px 0 40px;border-top:1px solid var(--line);colo
 <!-- BOM -->
 <section id="bom">
   <h2><small>Parts</small>Bill of materials (LCSC)</h2>
-  <p class="lead">Every LCSC number was looked up on lcsc.com on 2026-11-12. Prices are LCSC's low-quantity tier where it was captured. CSV: <a href="../V2/BOM_V2_LCSC.csv">V2/BOM_V2_LCSC.csv</a>.</p>
+  <p class="lead">Every LCSC number was looked up on lcsc.com on 2026-11-12. Prices are LCSC's low-quantity tier where it was captured. Tick a line once that part is added to your EasyEDA schematic (by its LCSC number). CSV: <a href="../V2/BOM_V2_LCSC.csv">V2/BOM_V2_LCSC.csv</a>.</p>
   <div class="stats" id="bomStats"></div>
   <div class="bomtools">
     <div class="chips" id="bomChips"></div>
     <input id="bomSearch" type="search" placeholder="Search ref, part, LCSC #…" aria-label="Search BOM">
   </div>
+  <div class="prog"><b id="bomProg">0 / 0</b><div class="bar"><i id="bomBar"></i></div><button class="tbtn" id="bomHide">Hide done</button><button class="tbtn" id="bomReset">Reset BOM ticks</button></div>
   <div class="tbl" style="max-height:640px"><table id="bomTable"></table></div>
   <div class="warn"><b>CH343G stock is low</b> (500 pcs at LCSC, more from other suppliers with a 3–7 day lead). Fallback: CH343P C2846043 (QFN-16), which has a different pinout and isn't hand-solderable. No DPDT slide switch was in stock, so V2 has no "5V IO" warning LED.</div>
 </section>
@@ -409,7 +441,9 @@ footer{margin-top:50px;padding:28px 0 40px;border-top:1px solid var(--line);colo
     <div class="card"><h3>Test pads</h3><p>VBUS_F, +5V, +3V3, VIO, GND, TXD, RXD, DTR#, RTS# as 1.5 mm pads on the bottom side for bring-up.</p></div>
   </div>
   <h3 style="margin-top:22px">Placement table</h3>
-  <div class="tbl" style="max-height:520px"><table id="plTable"></table></div>
+  <p class="figcap" style="margin:0 4px 10px">Tick each footprint once it is placed on the EasyEDA PCB. Placed parts turn green with a &check; on the board map above.</p>
+  <div class="prog"><b id="plProg">0 / 0</b><div class="bar"><i id="plBar"></i></div><button class="tbtn" id="plHide">Hide done</button><button class="tbtn" id="plReset">Reset placement ticks</button></div>
+  <div class="tbl" style="max-height:620px"><table id="plTable"></table></div>
 </section>
 
 <!-- WIRING -->
@@ -451,6 +485,15 @@ footer{margin-top:50px;padding:28px 0 40px;border-top:1px solid var(--line);colo
 </div></footer>
 
 <script>
+/* tick store (browser only) */
+const TK='uusbf-v2-ticks';
+let TICK={};try{TICK=JSON.parse(localStorage.getItem(TK)||'{}')||{}}catch(e){TICK={}}
+function saveTicks(){try{localStorage.setItem(TK,JSON.stringify(TICK))}catch(e){}}
+function setTick(k,v){if(v)TICK[k]=1;else delete TICK[k];saveTicks()}
+function clearTicks(prefix){Object.keys(TICK).forEach(k=>{if(k.startsWith(prefix))delete TICK[k]});saveTicks()}
+function prog(id,done,total){document.getElementById(id).textContent=`${done} / ${total} done`;document.getElementById(id.replace('Prog','Bar')).style.width=(total?100*done/total:0)+'%'}
+const HIDE={bom:false,pl:false,sch:false};
+function hideBtn(id,key,fn){const b=document.getElementById(id);b.addEventListener('click',()=>{HIDE[key]=!HIDE[key];b.textContent=HIDE[key]?'Show all':'Hide done';fn()})}
 const NET={'3V3':'--n3v3','5V':'--n5v','VIO':'--nvio','GND':'--ngnd','TX':'--ntx','RX':'--nrx','CTL':'--nctl','ESP':'--nesp','USB':'--nusb','NC':'--nnc'};
 const NETNAME={'3V3':'+3V3','5V':'+5V / VBUS','VIO':'VIO','GND':'GND','TX':'TXD','RX':'RXD / UPDI','CTL':'DTR# / RTS#','ESP':'EN / IO0 / RST','USB':'USB D+/D−','NC':'not connected'};
 const cv=n=>`var(${NET[n]})`;
@@ -529,10 +572,12 @@ let bomGroup='all';
 function renderBom(){
   const q=document.getElementById('bomSearch').value.trim().toLowerCase();
   const rows=BOM.filter(r=>(bomGroup==='all'||r[10]===bomGroup)&&(!q||r.join(' ').toLowerCase().includes(q)));
-  let h='<tr><th>Ref</th><th>Qty</th><th>Description</th><th>Part (MPN)</th><th>Package</th><th>LCSC #</th><th>Stock</th><th>Status</th></tr>';
-  h+=rows.map(r=>`<tr><td class="ref"><span class="dot" style="background:${GROUPS[r[10]][1]}"></span>${r[0]}</td><td>${r[1]}</td><td>${r[2]}${r[11]?`<br><small style="color:var(--mute)">${r[11]}</small>`:''}</td><td class="mono">${r[4]}<br><small style="color:var(--mute)">${r[5]}</small></td><td>${r[3]}</td><td class="mono">${r[6].startsWith('C')?`<a href="https://www.lcsc.com/product-detail/${r[6]}.html" target="_blank" rel="noopener">${r[6]}</a>`:r[6]}</td><td>${r[7]||'<small style="color:var(--mute)">not rechecked</small>'}</td><td><span class="pill ${ST[r[9]][1]}">${ST[r[9]][0]}</span></td></tr>`).join('');
-  if(!rows.length)h+='<tr><td colspan="8" style="color:var(--mute)">No parts match.</td></tr>';
+  const vis=rows.filter(r=>!(HIDE.bom&&TICK['bom:'+r[0]]));
+  let h='<tr><th>Added</th><th>Ref</th><th>Qty</th><th>Description</th><th>Part (MPN)</th><th>Package</th><th>LCSC #</th><th>Stock</th><th>Status</th></tr>';
+  h+=vis.map(r=>`<tr class="${TICK['bom:'+r[0]]?'done':''}"><td class="tick"><input type="checkbox" class="ck" data-k="bom:${r[0]}" ${TICK['bom:'+r[0]]?'checked':''} aria-label="${r[0]} added in EasyEDA"></td><td class="ref"><span class="dot" style="background:${GROUPS[r[10]][1]}"></span>${r[0]}</td><td>${r[1]}</td><td>${r[2]}${r[11]?`<br><small style="color:var(--mute)">${r[11]}</small>`:''}</td><td class="mono">${r[4]}<br><small style="color:var(--mute)">${r[5]}</small></td><td>${r[3]}</td><td class="mono">${r[6].startsWith('C')?`<a href="https://www.lcsc.com/product-detail/${r[6]}.html" target="_blank" rel="noopener">${r[6]}</a>`:r[6]}</td><td>${r[7]||'<small style="color:var(--mute)">not rechecked</small>'}</td><td><span class="pill ${ST[r[9]][1]}">${ST[r[9]][0]}</span></td></tr>`).join('');
+  if(!vis.length)h+='<tr><td colspan="9" style="color:var(--mute)">No parts to show.</td></tr>';
   document.getElementById('bomTable').innerHTML=h;
+  prog('bomProg',BOM.filter(r=>TICK['bom:'+r[0]]).length,BOM.length);
 }
 (function(){
   const lines=new Set(BOM.filter(r=>r[6].startsWith('C')).map(r=>r[6])).size;
@@ -543,6 +588,9 @@ function renderBom(){
   box.innerHTML=chips.map(c=>`<button class="chip" data-g="${c[0]}" aria-pressed="${c[0]==='all'}"><span class="dot" style="background:${c[2]}"></span>${c[1]}</button>`).join('');
   box.addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b)return;bomGroup=b.dataset.g;box.querySelectorAll('.chip').forEach(x=>x.setAttribute('aria-pressed',x===b));renderBom()});
   document.getElementById('bomSearch').addEventListener('input',renderBom);
+  document.getElementById('bomTable').addEventListener('change',e=>{const c=e.target.closest('.ck');if(!c)return;setTick(c.dataset.k,c.checked);renderBom()});
+  hideBtn('bomHide','bom',renderBom);
+  document.getElementById('bomReset').addEventListener('click',()=>{if(confirm('Clear all BOM ticks?')){clearTicks('bom:');renderBom()}});
   renderBom();
   document.querySelector('#bomStats').insertAdjacentHTML('afterend','<p class="figcap" style="margin:-6px 4px 14px">*Rough single-board estimate from low-quantity LCSC prices, excluding PCB, assembly and shipping. Biggest items: CH343G ~$0.59, SGM2212 ~$0.57.</p>');
 })();
@@ -581,7 +629,9 @@ function renderBoard(){
   PL.forEach(p=>{
     const [ref,x,y,w,h,g,lab]=p;const col=GROUPS[g][1];const dim=plGroup!=='all'&&plGroup!==g;
     const op=dim?.18:1;
-    s+=`<g opacity="${op}"><rect x="${x-w/2}" y="${y-h/2}" width="${w}" height="${h}" rx=".35" fill="${col}33" stroke="${col}" stroke-width=".22"/>`;
+    const placed=!!TICK['pl:'+ref];
+    s+=`<g opacity="${op}"><rect x="${x-w/2}" y="${y-h/2}" width="${w}" height="${h}" rx=".35" fill="${placed?'#22c55e66':col+'33'}" stroke="${placed?'#4ade80':col}" stroke-width="${placed?.35:.22}"/>`;
+    if(placed&&ref!=='H1'&&ref!=='J2')s+=`<circle cx="${x+w/2}" cy="${y-h/2}" r=".75" fill="#22c55e"/><path d="M${x+w/2-.38} ${y-h/2}l.28 .3l.5-.6" stroke="#fff" stroke-width=".22" fill="none"/>`;
     if(ref==='H1'){for(let i=0;i<11;i++){const py=y-12.7+i*2.54;s+=`<circle cx="${x}" cy="${py}" r=".85" fill="#d4a34a"/><circle cx="${x}" cy="${py}" r=".45" fill="#04120c"/><text x="${x-2.2}" y="${py+.5}" text-anchor="end" fill="${['NC','GND'].includes(PINS[i][3])?'#cbd5e1':getComputedStyle(document.documentElement).getPropertyValue(NET[PINS[i][3]])}" style="font:800 1.25px system-ui">${PINS[i][1]}</text>`}}
     else if(ref==='J2'){for(let r=0;r<2;r++)for(let i=0;i<4;i++){s+=`<circle cx="${x-3.81+i*2.54}" cy="${y-1.27+r*2.54}" r=".8" fill="#d4a34a"/><circle cx="${x-3.81+i*2.54}" cy="${y-1.27+r*2.54}" r=".42" fill="#04120c"/>`}}
     else if(w>=4&&h>=4){s+=`<text x="${x}" y="${y+.5}" text-anchor="middle" fill="#fff" style="font:800 1.4px system-ui">${lab}</text>`}
@@ -604,10 +654,59 @@ function renderBoard(){
   renderBoard();
   document.getElementById('legend2').innerHTML=Object.values(GROUPS).map(g=>`<span><span class="dot" style="background:${g[1]}"></span>${g[0]}</span>`).join('')+'<span>● gold = THT pad / mounting hole</span>';
   const fpOf=ref=>{const r=BOM.find(b=>b[0].split(' ').includes(ref));return r?r[3]:''};
-  let h='<tr><th>Ref</th><th>X (mm)</th><th>Y (mm)</th><th>Footprint</th><th>Block</th><th>Placement note</th></tr>';
   const NOTE={USB1:'Mouth flush with left edge',U3:'≤ 3 mm from USB1',U1:'Tab up, big copper + vias',U2:'Pin 1 top-left',C2:'At U2 pin 16',C3:'At U2 pin 4',C4:'At U2 pin 15',J2:'Bottom edge, module overhangs',H1:'Right edge, pin 1 (3V3) at top',SW3:'Edge, silk "IO 3V3 | 5V"',SW4:'Edge, silk "UART | UPDI"',SW1:'Edge, silk RESET',SW2:'Edge, silk BOOT',Q1:'Check pin map',Q2:'Check pin map: C = IO0',C8:'Next to J2 VCC'};
-  h+=PL.map(p=>`<tr><td class="ref"><span class="dot" style="background:${GROUPS[p[5]][1]}"></span>${p[0]}</td><td>${p[1]}</td><td>${p[2]}</td><td>${fpOf(p[0])}</td><td>${GROUPS[p[5]][0]}</td><td>${NOTE[p[0]]||''}</td></tr>`).join('');
+  window.renderPl=function(){
+  let h='<tr><th>Placed</th><th>Ref</th><th>X (mm)</th><th>Y (mm)</th><th>Footprint</th><th>Block</th><th>Placement note</th></tr>';
+  h+=PL.filter(p=>!(HIDE.pl&&TICK['pl:'+p[0]])).map(p=>`<tr class="${TICK['pl:'+p[0]]?'done':''}"><td class="tick"><input type="checkbox" class="ck" data-k="pl:${p[0]}" ${TICK['pl:'+p[0]]?'checked':''} aria-label="${p[0]} placed"></td><td class="ref"><span class="dot" style="background:${GROUPS[p[5]][1]}"></span>${p[0]}</td><td>${p[1]}</td><td>${p[2]}</td><td>${fpOf(p[0])}</td><td>${GROUPS[p[5]][0]}</td><td>${NOTE[p[0]]||''}</td></tr>`).join('');
   document.getElementById('plTable').innerHTML=h;
+  prog('plProg',PL.filter(p=>TICK['pl:'+p[0]]).length,PL.length);
+  };
+  renderPl();
+  document.getElementById('plTable').addEventListener('change',e=>{const c=e.target.closest('.ck');if(!c)return;setTick(c.dataset.k,c.checked);renderPl();renderBoard()});
+  hideBtn('plHide','pl',renderPl);
+  document.getElementById('plReset').addEventListener('click',()=>{if(confirm('Clear all placement ticks?')){clearTicks('pl:');renderPl();renderBoard()}});
+})();
+
+/* ===== Schematic checklist (EasyEDA pages) ===== */
+const NETCOL={'+3V3':'--n3v3','+5V':'--n5v','VBUS':'--n5v','VBUS_F':'--n5v','VIO':'--nvio','GND':'--ngnd','TXD':'--ntx','RXD':'--nrx','USB_DP':'--nusb','USB_DM':'--nusb','CC1':'--nusb','CC2':'--nusb','DTR_N':'--nctl','RTS_N':'--nctl','DTR_AP':'--nctl','RTS_AP':'--nctl','Q1_B':'--nctl','Q2_B':'--nctl','ACT_N':'--nctl','EN':'--nesp','IO0':'--nesp','RST':'--nesp','IO15':'--nesp','ESP01_RST':'--nesp','ESP01_IO2':'--nesp','UPDI_R':'--nrx','V3':'--ngnd'};
+const netTag=n=>n==='NC'?'<span class="ncflag">NC flag</span>':`<span class="net" style="background:var(${NETCOL[n]||'--nnc'})">${n}</span>`;
+const SCHDATA={"pages": [["P1", "Page 1 · USB + Power", "USB-C, ESD, fuse, LDO, IO switch, PWR LED"], ["P2", "Page 2 · USB-UART", "CH343G, decoupling, TX/RX/ACT LEDs"], ["P3", "Page 3 · Auto-program + control", "Q1/Q2, SJ1/SJ2, pull-ups, buttons, UPDI, Arduino RST"], ["P4", "Page 4 · Connectors", "H1 header, J2 ESP-01 socket"]], "parts": [["USB1", "P1", "USB-C 16P", "USB-C-SMD_TYPE-C-16PIN-2MD(073)", "C2765186", [["1", "GND", "GND"], ["2", "VBUS", "VBUS"], ["3", "SBU2", "NC"], ["4", "CC1", "CC1"], ["5", "DN2", "USB_DM"], ["6", "DP1", "USB_DP"], ["7", "DN1", "USB_DM"], ["8", "DP2", "USB_DP"], ["9", "SBU1", "NC"], ["10", "CC2", "CC2"], ["11", "VBUS", "VBUS"], ["12", "GND", "GND"], ["13", "SHELL", "GND"], ["14", "SHELL", "GND"]]], ["R1", "P1", "5.1k", "R0805", "C27834", [["1", "1", "CC1"], ["2", "2", "GND"]]], ["R2", "P1", "5.1k", "R0805", "C27834", [["1", "1", "CC2"], ["2", "2", "GND"]]], ["U3", "P1", "USBLC6-2SC6", "SOT-23-6", "C7519", [["1", "I/O1", "USB_DP"], ["2", "GND", "GND"], ["3", "I/O2", "USB_DM"], ["4", "I/O2", "USB_DM"], ["5", "VBUS", "VBUS"], ["6", "I/O1", "USB_DP"]]], ["F1", "P1", "PTC 500 mA", "F1206", "C2680506", [["1", "1", "VBUS"], ["2", "2", "VBUS_F"]]], ["C1", "P1", "10 µF", "C0805", "C15850", [["1", "1", "VBUS_F"], ["2", "2", "GND"]]], ["D1", "P1", "1N5819HW", "SOD-123", "C82544", [["1", "K (band)", "+5V"], ["2", "A", "VBUS_F"]]], ["C5", "P1", "10 µF", "C0805", "C15850", [["1", "1", "+5V"], ["2", "2", "GND"]]], ["U1", "P1", "SGM2212-3.3", "SOT-223-3", "C3294699", [["1", "GND", "GND"], ["2", "VOUT", "+3V3"], ["3", "VIN", "+5V"], ["4", "VOUT (tab)", "+3V3"]]], ["C6", "P1", "22 µF", "C0805", "C45783", [["1", "1", "+3V3"], ["2", "2", "GND"]]], ["C7", "P1", "100 nF", "C0805", "C49678", [["1", "1", "+3V3"], ["2", "2", "GND"]]], ["SW3", "P1", "MSK12C02 (IO 3V3|5V)", "SW-SMD_MSK12C02", "C431540", [["1", "throw A", "+3V3"], ["2", "common", "VIO"], ["3", "throw B", "+5V"]]], ["R3", "P1", "1k", "R0805", "C95781", [["1", "1", "+3V3"], ["2", "2", "LED1_A"]]], ["LED1", "P1", "Red (PWR)", "LED0805", "C84256", [["2", "A", "LED1_A"], ["1", "K", "GND"]]], ["U2", "P2", "CH343G", "SOP-16", "C2844153", [["1", "GND", "GND"], ["2", "TXD", "TXD"], ["3", "RXD", "RXD"], ["4", "V3", "V3"], ["5", "UD+", "USB_DP"], ["6", "UD-", "USB_DM"], ["7", "VBUS", "VBUS_F"], ["8", "ACT#", "ACT_N"], ["9", "DCD#", "NC"], ["10", "TNOW/DTR#", "DTR_N"], ["11", "RTS#", "RTS_N"], ["12", "DSR#", "NC"], ["13", "CTS#", "NC"], ["14", "RI#", "NC"], ["15", "VIO", "VIO"], ["16", "VDD5", "VBUS_F"]]], ["C2", "P2", "100 nF (VDD5)", "C0805", "C49678", [["1", "1", "VBUS_F"], ["2", "2", "GND"]]], ["C3", "P2", "100 nF (V3)", "C0805", "C49678", [["1", "1", "V3"], ["2", "2", "GND"]]], ["C4", "P2", "100 nF (VIO)", "C0805", "C49678", [["1", "1", "VIO"], ["2", "2", "GND"]]], ["R4", "P2", "2.2k", "R0805", "C17520", [["1", "1", "VIO"], ["2", "2", "LED2_A"]]], ["LED2", "P2", "Orange (TX)", "LED0805", "C84262", [["2", "A", "LED2_A"], ["1", "K", "TXD"]]], ["R5", "P2", "2.2k", "R0805", "C17520", [["1", "1", "VIO"], ["2", "2", "LED3_A"]]], ["LED3", "P2", "Yellow (RX)", "LED0805", "C965814", [["2", "A", "LED3_A"], ["1", "K", "RXD"]]], ["R6", "P2", "2.2k", "R0805", "C17520", [["1", "1", "VIO"], ["2", "2", "LED4_A"]]], ["LED4", "P2", "Green (ACT)", "LED0805", "C84260", [["2", "A", "LED4_A"], ["1", "K", "ACT_N"]]], ["SJ1", "P3", "Solder jumper (bridged)", "SolderJumper-2_Bridged", "-", [["1", "1", "DTR_N"], ["2", "2", "DTR_AP"]]], ["SJ2", "P3", "Solder jumper (bridged)", "SolderJumper-2_Bridged", "-", [["1", "1", "RTS_N"], ["2", "2", "RTS_AP"]]], ["R7", "P3", "10k", "R0805", "C84376", [["1", "1", "DTR_AP"], ["2", "2", "Q1_B"]]], ["R8", "P3", "10k", "R0805", "C84376", [["1", "1", "RTS_AP"], ["2", "2", "Q2_B"]]], ["Q1", "P3", "MMBT3904 (EN)", "SOT-23-3", "C81464", [["1", "B", "Q1_B"], ["2", "E", "RTS_AP"], ["3", "C", "EN"]]], ["Q2", "P3", "MMBT3904 (IO0)", "SOT-23-3", "C81464", [["1", "B", "Q2_B"], ["2", "E", "DTR_AP"], ["3", "C", "IO0"]]], ["R9", "P3", "10k (EN pull-up)", "R0805", "C84376", [["1", "1", "+3V3"], ["2", "2", "EN"]]], ["C9", "P3", "100 nF (EN)", "C0805", "C49678", [["1", "1", "EN"], ["2", "2", "GND"]]], ["R10", "P3", "10k (IO0 pull-up)", "R0805", "C84376", [["1", "1", "+3V3"], ["2", "2", "IO0"]]], ["R11", "P3", "10k (IO15 pull-down)", "R0805", "C84376", [["1", "1", "IO15"], ["2", "2", "GND"]]], ["SW1", "P3", "RESET", "SW-SMD_L3.9-W3.0-P4.45", "C720477", [["1", "1", "EN"], ["2", "2", "GND"]]], ["SW2", "P3", "BOOT", "SW-SMD_L3.9-W3.0-P4.45", "C720477", [["1", "1", "IO0"], ["2", "2", "GND"]]], ["C10", "P3", "100 nF (Arduino reset)", "C0805", "C49678", [["1", "1", "DTR_N"], ["2", "2", "RST"]]], ["R14", "P3", "10k (RST pull-up)", "R0805", "C84376", [["1", "1", "VIO"], ["2", "2", "RST"]]], ["SW4", "P3", "MSK12C02 (UART|UPDI)", "SW-SMD_MSK12C02", "C431540", [["1", "throw A (UPDI)", "TXD"], ["2", "common", "UPDI_R"], ["3", "throw B (UART)", "NC"]]], ["R15", "P3", "4.7k (UPDI)", "R0805", "C17673", [["1", "1", "UPDI_R"], ["2", "2", "RXD"]]], ["H1", "P4", "1x11 male header", "HDR-TH_11P-P2.54-V-M", "C2840011", [["1", "3V3", "+3V3"], ["2", "5V", "+5V"], ["3", "GND", "GND"], ["4", "TX", "TXD"], ["5", "RX/UPDI", "RXD"], ["6", "DTR", "DTR_N"], ["7", "RTS", "RTS_N"], ["8", "RST", "RST"], ["9", "EN", "EN"], ["10", "IO0", "IO0"], ["11", "IO15", "IO15"]]], ["J2", "P4", "2x4 female (ESP-01)", "HDR-TH_8P-P2.54-V-F-R2-C4", "C2897405", [["1", "GND", "GND"], ["2", "TXD (ESP out)", "RXD"], ["3", "GPIO2", "ESP01_IO2"], ["4", "CH_PD", "EN"], ["5", "GPIO0", "IO0"], ["6", "RST", "ESP01_RST"], ["7", "RXD (ESP in)", "TXD"], ["8", "VCC", "+3V3"]]], ["C8", "P4", "22 µF (ESP-01 bulk)", "C0805", "C45783", [["1", "1", "+3V3"], ["2", "2", "GND"]]], ["R12", "P4", "10k (ESP-01 RST)", "R0805", "C84376", [["1", "1", "+3V3"], ["2", "2", "ESP01_RST"]]], ["R13", "P4", "10k (ESP-01 GPIO2)", "R0805", "C84376", [["1", "1", "+3V3"], ["2", "2", "ESP01_IO2"]]]]};
+const SPAGES=SCHDATA.pages, SPARTS=SCHDATA.parts;
+const NETIDX={};SPARTS.forEach(p=>p[5].forEach(pin=>{if(pin[2]==='NC')return;(NETIDX[pin[2]]=NETIDX[pin[2]]||[]).push([p[0],pin[0],pin[1],p[1]])}));
+const pagesOfNet=n=>[...new Set((NETIDX[n]||[]).map(x=>x[3]))];
+const PWRN=['GND','+3V3','+5V'];
+let schPage='P1';
+function schCounts(pg){let t=0,d=0;SPARTS.filter(p=>!pg||p[1]===pg).forEach(p=>{t++;if(TICK['sym:'+p[0]])d++;p[5].forEach(pin=>{t++;if(TICK['pin:'+p[0]+'.'+pin[0]])d++})});return [d,t]}
+function renderSch(){
+  document.getElementById('schTabs').innerHTML=SPAGES.map(pg=>{const [d,t]=schCounts(pg[0]);return `<button class="ptab" data-p="${pg[0]}" aria-pressed="${pg[0]===schPage}"><span class="pp">${d===t?'&check; ':''}${d}/${t}</span><br><b>${pg[1]}</b><small>${pg[2]}</small></button>`}).join('');
+  const [ad,at]=schCounts(null);document.getElementById('schAll').textContent=`${ad} / ${at} done`;document.getElementById('schAllBar').style.width=(at?100*ad/at:0)+'%';
+  const parts=SPARTS.filter(p=>p[1]===schPage);
+  const nets=[...new Set(parts.flatMap(p=>p[5].map(x=>x[2])))].filter(n=>n!=='NC');
+  const cross=nets.filter(n=>pagesOfNet(n).length>1&&!PWRN.includes(n));
+  const ncs=parts.flatMap(p=>p[5].filter(x=>x[2]==='NC').map(x=>p[0]+'.'+x[0]+' ('+x[1]+')'));
+  let h=`<div class="card" style="margin-bottom:12px"><h3>Net labels needed on this page</h3><p>These nets continue on another page. Put a net label with exactly this name on each. GND, +3V3 and +5V use EasyEDA power/ground symbols, which are global, so they need no label.</p><div class="labels">${cross.map(n=>netTag(n)+`<small style="color:var(--mute);margin-right:8px"> &rarr; ${pagesOfNet(n).filter(x=>x!==schPage).join(', ')}</small>`).join('')||'<small>none</small>'}</div>`+
+    `<p><b>No-Connect flags on this page:</b> ${ncs.length?ncs.map(x=>`<code>${x}</code>`).join(' &middot; '):'none'}</p></div>`;
+  h+='<div class="tbl"><table><tr><th>Done</th><th>Pin #</th><th>Pin name</th><th>Net</th><th>Connects to (Ref.pin)</th></tr>';
+  parts.forEach(p=>{
+    const sk='sym:'+p[0];const symDone=!!TICK[sk];
+    const pinsLeft=p[5].filter(pin=>!TICK['pin:'+p[0]+'.'+pin[0]]);
+    if(HIDE.sch&&symDone&&!pinsLeft.length)return;
+    h+=`<tr><td colspan="5" style="padding:0"><div class="partline"><input type="checkbox" class="ck" data-k="${sk}" ${symDone?'checked':''} aria-label="${p[0]} symbol placed"><b>${p[0]}</b><span>${p[2]}</span><span class="mute">Footprint: <code>${p[3]}</code></span><span class="mute">LCSC: ${p[4].startsWith('C')?`<a href="https://www.lcsc.com/product-detail/${p[4]}.html" target="_blank" rel="noopener">${p[4]}</a>`:p[4]}</span><span class="mute">${symDone?'symbol placed &check;':'tick when the symbol is placed'}</span></div></td></tr>`;
+    p[5].forEach(pin=>{
+      const k='pin:'+p[0]+'.'+pin[0];const dn=!!TICK[k];if(HIDE.sch&&dn)return;
+      const others=PWRN.includes(pin[2])?`<span style="color:var(--mute)">Use the <b>${pin[2]}</b> power symbol (global, ${(NETIDX[pin[2]]||[]).length} pins on this net)</span>`:pin[2]==='NC'?'<span style="color:var(--mute)">Place a No-Connect flag on this pin</span>':(NETIDX[pin[2]]||[]).filter(x=>!(x[0]===p[0]&&x[1]===pin[0])).map(x=>`<span style="white-space:nowrap">${x[0]}.${x[1]}${x[3]!==schPage?`<small style="color:var(--a)"> (${x[3]})</small>`:''}</span>`).join(', ');
+      h+=`<tr class="${dn?'done':''}"><td class="tick"><input type="checkbox" class="ck" data-k="${k}" ${dn?'checked':''} aria-label="${p[0]} pin ${pin[0]} ${pin[2]==='NC'?'no-connect flag placed':'wired'}"></td><td class="mono"><b>${p[0]}.${pin[0]}</b></td><td>${pin[1]}</td><td>${netTag(pin[2])}</td><td style="font-size:13.5px">${others||'<small style="color:var(--mute)">local net</small>'}</td></tr>`;
+    });
+  });
+  h+='</table></div>';
+  document.getElementById('schPage').innerHTML=h;
+}
+(function(){
+  document.getElementById('schTabs').addEventListener('click',e=>{const b=e.target.closest('.ptab');if(!b)return;schPage=b.dataset.p;renderSch()});
+  document.getElementById('schPage').addEventListener('change',e=>{const c=e.target.closest('.ck');if(!c)return;setTick(c.dataset.k,c.checked);renderSch()});
+  hideBtn('schHide','sch',renderSch);
+  document.getElementById('schReset').addEventListener('click',()=>{if(confirm('Clear all schematic ticks?')){clearTicks('sym:');clearTicks('pin:');renderSch()}});
+  renderSch();
 })();
 
 /* Hero board render (3D-ish) */
