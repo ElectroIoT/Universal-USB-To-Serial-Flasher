@@ -5,6 +5,8 @@
 ![3D Render Back](/Image/3d_Back.png)  
 *Final 3D PCB Render with Color-Coded Silkscreen*
 
+> **V2 in progress:** CH343G (3.3V/5V logic), ESP-01 socket, UPDI mode, Arduino RST pin, polyfuse, and a fix for the V1 IO0 transistor wiring. See [V2/README.md](V2/README.md).
+
 ---
 
 ## 📖 Overview
