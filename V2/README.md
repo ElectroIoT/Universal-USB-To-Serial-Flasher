@@ -1,5 +1,8 @@
 # Universal USB Flasher V2: design plan
 
+> **Superseded.** This folder is the early V2 plan (CH343G). The current design is **V2.1** (CH342F dual UART, ESP-Prog port, current-limited target power, header ESD) in **[ElectroIoT/Universal-USB-Flasher-V2](https://github.com/ElectroIoT/Universal-USB-Flasher-V2)**. Use that repo for the BOM, pin list and EasyEDA checklists.
+
+
 Status: **plan + netlist + LCSC BOM only.** Schematic capture and PCB layout are done by hand in EasyEDA.
 Nothing here has been built or tested on hardware yet.
 
